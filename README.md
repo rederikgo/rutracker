@@ -10,7 +10,8 @@ Module allows communicating with <htps://rutracker.net> (mirror of rutracker.org
 ## Usage:
 Module contains the single Rutracker class. Import and create an instance, providing rutracker credentals.
 
-```from rutracker import Rutracker
+```
+from rutracker import Rutracker
 
 x = Rutracker('yourlogin', 'yourpassword')
 ```
@@ -21,7 +22,7 @@ After successful login the module will save cookies in 'rt_cookies.txt' in worki
 
 Optionaly you may supply alternative mirror url ('https://rutracker.net/' is used by default):
     
-```x = Rutracker('yourlogin', 'yourpassword', tracker_url='https://rutracker.cr/')```
+`x = Rutracker('yourlogin', 'yourpassword', tracker_url='https://rutracker.cr/')`
 
 You may use the following methods with your new instance:
 * search - search the tracker

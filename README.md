@@ -17,6 +17,7 @@ x = Rutracker('yourlogin', 'yourpassword')
 ```
 
 The module will either login successfully or throw an exception.
+
 You may have to solve captcha, when loging in for the fist time. The module will save captcha image as 'captcha.jpg' in working directory.
 After successful login the module will save cookies in 'rt_cookies.txt' in working directory and will reuse them for future sessions.
 
@@ -24,19 +25,24 @@ Optionaly you may supply alternative mirror url ('https://rutracker.net/' is use
     
 `x = Rutracker('yourlogin', 'yourpassword', tracker_url='https://rutracker.cr/')`
 
+
 You may use the following methods with your new instance:
 * search - search the tracker
-...IN: Search line
-...OUT: List of all results, each result a list of columns:
-** forum
-** topic
-** topic id
-** size (in bytes, approx.)
-** number of seeds (-1 if none)
-** number of leeches
-** number of downloads
-** date added (as UNIX time)
-...example: `x.search('the man with a movie camera')`
+
+   IN: Search line
+   
+   OUT: List of all results, each result a list of columns:
+   
+   ** forum
+   ** topic
+   ** topic id
+   ** size (in bytes, approx.)
+   ** number of seeds (-1 if none)
+   ** number of leeches
+   ** number of downloads
+   ** date added (as UNIX time)
+   
+   example: `x.search('the man with a movie camera')`
 
 * get_info - get topic description text
         IN: Topic id

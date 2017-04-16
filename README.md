@@ -30,6 +30,7 @@ You may use the following methods with your new instance:
 * search - search the tracker
 
    IN: Search line
+   
    OUT: List of all results, each result a list of columns:
    * forum
    * topic
@@ -43,14 +44,21 @@ You may use the following methods with your new instance:
    example: `x.search('the man with a movie camera')`
 
 * get_info - get topic description text
+
         IN: Topic id
+        
         OUT: Unformatted topic description text
-	example: 'x.get_info(5050254)'
+	
+    example: 'x.get_info(5050254)'
 
 * get_torrent - download torrent files
-	IN: Torrent id (topic id).
-	Optional: 
-		- name (name will be used as a filename. Torrent id will be used otherwise)
-		- path (working directory will be used by default)
+	
+    IN: Torrent id (topic id).
+	
+    Optional: 
+		* name (name will be used as a filename. Torrent id will be used otherwise)
+		* path (working directory will be used by default)
+        
         OUT: '{name}.torrent' file saved to {path}
-		example: 'x.get_torrent(5050254)'
+		
+        example: 'x.get_torrent(5050254)'

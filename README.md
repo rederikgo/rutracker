@@ -12,7 +12,8 @@ Module contains the single Rutracker class. Import and create an instance, provi
 
 ```from rutracker import Rutracker
 
-x = Rutracker('yourlogin', 'yourpassword')```
+x = Rutracker('yourlogin', 'yourpassword')
+```
 
 The module will either login successfully or throw an exception.
 You may have to solve captcha, when loging in for the fist time. The module will save captcha image as 'captcha.jpg' in working directory.

@@ -44,12 +44,10 @@ You may use the following methods with your new instance:
    example: `x.search('the man with a movie camera')`
 
 * get_info - get topic description text
-
-        IN: Topic id
-        
-        OUT: Unformatted topic description text
+	IN: Topic id
+	OUT: Unformatted topic description text
 	
-    example: 'x.get_info(5050254)'
+	example: 'x.get_info(5050254)'
 
 * get_torrent - download torrent files
 	

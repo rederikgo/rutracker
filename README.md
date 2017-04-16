@@ -30,17 +30,15 @@ You may use the following methods with your new instance:
 * search - search the tracker
 
    IN: Search line
-   
    OUT: List of all results, each result a list of columns:
-   
-   ** forum
-   ** topic
-   ** topic id
-   ** size (in bytes, approx.)
-   ** number of seeds (-1 if none)
-   ** number of leeches
-   ** number of downloads
-   ** date added (as UNIX time)
+   * forum
+   * topic
+   * topic id
+   * size (in bytes, approx.)
+   * number of seeds (-1 if none)
+   * number of leeches
+   * number of downloads
+   * date added (as UNIX time)
    
    example: `x.search('the man with a movie camera')`
 

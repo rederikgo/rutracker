@@ -71,6 +71,8 @@ class Rutracker:
             handler = logging.StreamHandler()
         elif logging_mode == 'file':
             handler = logging.FileHandler('rutracker.log')
+        else:
+            return
         handler.setLevel(logging.DEBUG)
 
         formatter = logging.Formatter('%(name)s: %(asctime)s: %(message)s')

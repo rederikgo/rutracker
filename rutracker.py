@@ -17,7 +17,7 @@ from bs4 import SoupStrainer
 import requests
 
 class Rutracker:
-    """Main calss for communicating with the tracker
+    """Main class for communicating with the tracker
 
     Usable methods:
     - search (search the tracker and get results as array)
@@ -25,7 +25,7 @@ class Rutracker:
     - get_torrent (download .torrent file for the specified topic)
     """
 
-    def __init__(self, login, password, tracker_url='https://rutracker.net/', logging_mode=''):
+    def __init__(self, login, password, tracker_url='https://rutracker.net/', logging_mode='', proxies={}):
         """Create an instance of Rutracker class
 
         Required arguments:
@@ -35,6 +35,11 @@ class Rutracker:
         Optional arguments:
         - tracker_url (mirror url, 'https://rutracker.net/' by default)
         - logging_mode ('console' or 'file', disabled by default)
+        - proxies in requests format:
+            for https proxy:
+                {'https': 'https://user:pass@host:port/'}
+            for socks proxy (you will also need requests[socks] package installed):
+                {'https': 'socks5://user:pass@host:port'}
 
         Init will establish connection with rutracker.net or will raise an exception. You may be
         prompted to solve captcha during the first use. The captcha image will be saved as
@@ -43,6 +48,7 @@ class Rutracker:
         sessions.
         """
 
+        self.proxies = proxies
         self._setup_logging(logging_mode)
         self.tracker_path = tracker_url
         self.request_time = 0
@@ -67,6 +73,8 @@ class Rutracker:
         self.logger = logging.getLogger('rutracker')
         self.logger.setLevel(logging.DEBUG)
 
+        if self.logger.handlers:
+            return
         if logging_mode == 'console':
             handler = logging.StreamHandler()
         elif logging_mode == 'file':
@@ -174,8 +182,7 @@ class Rutracker:
         """
         raw = self._ask_tracker('viewtopic', topic_id=str(topic_id))
         soup = BeautifulSoup(raw, 'html.parser')
-        description = soup.findAll('div', {'class': 'post_body'})[0]
-        description.find(id='tor-reged').extract()
+        description = soup.find('div', {'class': 'post_body'}).extract()
 
         return description.get_text()
 
@@ -227,7 +234,7 @@ class Rutracker:
                 with requests.session() as session:
                     session.cookies.update(self.session_cookies)
                     self.request_time = time.time()
-                    response = session.get(url)
+                    response = session.get(url, proxies=self.proxies)
                     status_code = response.status_code
                     self.logger.debug(':'.join((str(status_code), url)))
             except:
@@ -262,7 +269,7 @@ class Rutracker:
         # Start session
         with requests.Session() as session:
             # Try to login
-            post_response = session.post(url, data=login_data)
+            post_response = session.post(url, data=login_data, proxies=self.proxies)
 
             # Solve captcha
             if 'captcha' in post_response.text:
@@ -285,9 +292,8 @@ class Rutracker:
                         caplink = image.get('src')
                         q = caplink.find('?')
                         caplink = caplink[:q]
-                        caplink = ''.join(('http:', caplink))
                         break
-                response = requests.get(caplink, stream=True)
+                response = requests.get(caplink, stream=True, proxies=self.proxies)
                 with open('captcha.jpg', 'wb') as file:
                     for chunk in response:
                         file.write(chunk)
@@ -298,8 +304,8 @@ class Rutracker:
                 os.remove('captcha.jpg')
 
             # Login with captcha and test login status
-            post_response = session.post(url, data=login_data)
-            if 'logged-in-as-cap' in post_response.text:
+            post_response = session.post(url, data=login_data, proxies=self.proxies)
+            if 'logged-in-username' in post_response.text:
                 self.logger.info('Login successful')
             else:
                 raise ConnectionError('Failed to log in')
@@ -309,7 +315,7 @@ class Rutracker:
     def _test_connection(self):
         with requests.session() as session:
             session.cookies.update(self.session_cookies)
-            response = session.get(self.tracker_path + 'forum/index.php')
+            response = session.get(self.tracker_path + 'forum/index.php', proxies=self.proxies)
             if response.status_code != 200:
                 print('Wrong reply during connection test')
             if 'logged-in-as-cap' in response.text:

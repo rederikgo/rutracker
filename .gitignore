@@ -1,4 +1,8 @@
+# Ignore
 __pycache__/
 *.log
 *.txt
 test*.py
+
+# Allow
+!requirements.txt

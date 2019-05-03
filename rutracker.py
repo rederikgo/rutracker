@@ -318,7 +318,7 @@ class Rutracker:
             response = session.get(self.tracker_path + 'forum/index.php', proxies=self.proxies)
             if response.status_code != 200:
                 print('Wrong reply during connection test')
-            if 'logged-in-as-cap' in response.text:
+            if 'logged-in-username' in response.text:
                 self.logger.info('Login successful')
                 return True
 

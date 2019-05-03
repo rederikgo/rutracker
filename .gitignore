@@ -1,5 +1,7 @@
 # Ignore
 __pycache__/
+venv
+.idea
 *.log
 *.txt
 test*.py

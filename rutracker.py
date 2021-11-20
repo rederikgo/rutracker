@@ -106,7 +106,7 @@ class Rutracker:
         - topic
         - topic id
         - size (in bytes, approx.)
-        - number of seeds (-1 if none)
+        - number of seeds (negative number means days without seeds)
         - number of leeches
         - number of downloads
         - date added (as UNIX time)
@@ -155,14 +155,14 @@ class Rutracker:
         parse_only = SoupStrainer(['a', 'td'])
         soup = BeautifulSoup(raw, 'html.parser', parse_only=parse_only)
 
-        boards = [i.text for i in soup.findAll('td', {'class': 'row1 f-name'})]
-        topics = [i.text for i in soup.findAll('a', {'class': 'med tLink hl-tags bold'})]
-        links = [int(i.get('data-topic_id')) for i in soup.findAll('a', {'class': 'med tLink hl-tags bold'})]
+        boards = [i.text for i in soup.findAll('a', {'class': 'gen f ts-text'})]
+        topics = [i.text for i in soup.findAll('a', {'class': 'med tLink ts-text hl-tags bold'})]
+        links = [int(i.get('data-topic_id')) for i in soup.findAll('a', {'class': 'med tLink ts-text hl-tags bold'})]
         sizes = [self._convert_size(i.text) for i in soup.findAll('a', {'class': 'small tr-dl dl-stub'})]
-        seeds = [int(i.u.text) for i in soup.findAll('td', {'class': 'row4 nowrap'})]
-        leeches = [int(i.text) for i in soup.findAll('td', {'class': 'row4 leechmed'})]
+        seeds = [int(i.get('data-ts_text')) for i in soup.findAll('td', {'class': 'row4 nowrap'})]
+        leeches = [int(i.text) for i in soup.findAll('td', {'class': 'row4 leechmed bold'})]
         downloads = [int(i.text) for i in soup.findAll('td', {'class': 'row4 small number-format'})]
-        added = [int(i.u.text) for i in soup.findAll('td', {'class': 'row4 small nowrap'})]
+        added = [int(i.get('data-ts_text')) for i in soup.findAll('td', {'class': 'row4 small nowrap'})]
 
         search_results = [i for i in zip(boards, topics, links, sizes, seeds, leeches, downloads, added)]
 

@@ -156,8 +156,8 @@ class Rutracker:
         soup = BeautifulSoup(raw, 'html.parser', parse_only=parse_only)
 
         boards = [i.text for i in soup.findAll('a', {'class': 'gen f ts-text'})]
-        topics = [i.text for i in soup.findAll('a', {'class': 'med tLink ts-text hl-tags bold'})]
-        links = [int(i.get('data-topic_id')) for i in soup.findAll('a', {'class': 'med tLink ts-text hl-tags bold'})]
+        topics = [i.text for i in soup.findAll('a', {'class': 'med tLink tt-text ts-text hl-tags bold'})]
+        links = [int(i.get('data-topic_id')) for i in soup.findAll('a', {'class': 'med tLink tt-text ts-text hl-tags bold'})]
         sizes = [self._convert_size(i.text) for i in soup.findAll('a', {'class': 'small tr-dl dl-stub'})]
         seeds = [int(i.get('data-ts_text')) for i in soup.findAll('td', {'class': 'row4 nowrap'})]
         leeches = [int(i.text) for i in soup.findAll('td', {'class': 'row4 leechmed bold'})]

@@ -155,14 +155,18 @@ class Rutracker:
         parse_only = SoupStrainer(['a', 'td'])
         soup = BeautifulSoup(raw, 'html.parser', parse_only=parse_only)
 
-        boards = [i.text for i in soup.findAll('td', {'class': 'row1 f-name'})]
-        topics = [i.text for i in soup.findAll('a', {'class': 'med tLink hl-tags bold'})]
-        links = [int(i.get('data-topic_id')) for i in soup.findAll('a', {'class': 'med tLink hl-tags bold'})]
-        sizes = [self._convert_size(i.text) for i in soup.findAll('a', {'class': 'small tr-dl dl-stub'})]
-        seeds = [int(i.u.text) for i in soup.findAll('td', {'class': 'row4 nowrap'})]
-        leeches = [int(i.text) for i in soup.findAll('td', {'class': 'row4 leechmed'})]
-        downloads = [int(i.text) for i in soup.findAll('td', {'class': 'row4 small number-format'})]
-        added = [int(i.u.text) for i in soup.findAll('td', {'class': 'row4 small nowrap'})]
+        # This part will break alot!
+        try:
+            boards = [i.text.strip('\n') for i in soup.findAll('td', {'class': 'row1 f-name-col'})]
+            topics = [i.text.strip('\n') for i in soup.findAll('td', {'class': 'row4 med tLeft t-title-col tt'})]
+            links = [int(i.get('data-topic_id')) for i in soup.findAll('a', {'class': 'med tLink tt-text ts-text hl-tags bold'})]
+            sizes = [self._convert_size(i.text) for i in soup.findAll('td', {'class': 'row4 small nowrap tor-size'})]
+            seeds = [int(i.text) for i in soup.findAll('td', {'class': 'row4 nowrap'})]
+            leeches = [int(i.text) for i in soup.findAll('td', {'class': 'row4 leechmed bold'})]
+            downloads = [int(i.text) for i in soup.findAll('td', {'class': 'row4 small number-format'})]
+            added = [int(i.get('data-ts_text')) for i in soup.findAll('td', {'class': 'row4 small nowrap'})]
+        except Exception as e:
+            raise e
 
         search_results = [i for i in zip(boards, topics, links, sizes, seeds, leeches, downloads, added)]
 

@@ -106,7 +106,7 @@ class Rutracker:
         - topic
         - topic id
         - size (in bytes, approx.)
-        - number of seeds (-1 if none)
+        - number of seeds (negative number means days without seeds)
         - number of leeches
         - number of downloads
         - date added (as UNIX time)

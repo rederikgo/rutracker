@@ -155,14 +155,18 @@ class Rutracker:
         parse_only = SoupStrainer(['a', 'td'])
         soup = BeautifulSoup(raw, 'html.parser', parse_only=parse_only)
 
-        boards = [i.text for i in soup.findAll('a', {'class': 'gen f ts-text'})]
-        topics = [i.text for i in soup.findAll('a', {'class': 'med tLink tt-text ts-text hl-tags bold'})]
-        links = [int(i.get('data-topic_id')) for i in soup.findAll('a', {'class': 'med tLink tt-text ts-text hl-tags bold'})]
-        sizes = [self._convert_size(i.text) for i in soup.findAll('a', {'class': 'small tr-dl dl-stub'})]
-        seeds = [int(i.get('data-ts_text')) for i in soup.findAll('td', {'class': 'row4 nowrap'})]
-        leeches = [int(i.text) for i in soup.findAll('td', {'class': 'row4 leechmed bold'})]
-        downloads = [int(i.text) for i in soup.findAll('td', {'class': 'row4 small number-format'})]
-        added = [int(i.get('data-ts_text')) for i in soup.findAll('td', {'class': 'row4 small nowrap'})]
+        # This part will break alot!
+        try:
+            boards = [i.text.strip('\n') for i in soup.findAll('td', {'class': 'row1 f-name-col'})]
+            topics = [i.text.strip('\n') for i in soup.findAll('td', {'class': 'row4 med tLeft t-title-col tt'})]
+            links = [int(i.get('data-topic_id')) for i in soup.findAll('a', {'class': 'med tLink tt-text ts-text hl-tags bold'})]
+            sizes = [self._convert_size(i.text) for i in soup.findAll('td', {'class': 'row4 small nowrap tor-size'})]
+            seeds = [int(i.text) for i in soup.findAll('td', {'class': 'row4 nowrap'})]
+            leeches = [int(i.text) for i in soup.findAll('td', {'class': 'row4 leechmed bold'})]
+            downloads = [int(i.text) for i in soup.findAll('td', {'class': 'row4 small number-format'})]
+            added = [int(i.get('data-ts_text')) for i in soup.findAll('td', {'class': 'row4 small nowrap'})]
+        except Exception as e:
+            raise e
 
         search_results = [i for i in zip(boards, topics, links, sizes, seeds, leeches, downloads, added)]
 
@@ -196,17 +200,19 @@ class Rutracker:
         - Name (name will be used as a filename. Torrent id will be used otherwise)
         - Path (working directory will be used by default)
 
-        OUT: name.torrent file saved to path
+        OUT: name.torrent file path
         """
 
         torrent = self._ask_tracker('downloadtorrent', topic_id=str(topic_id))
         if not name:
             name = str(topic_id)
-        name = path + name
+        name = os.path.join(path, name)
         filename = '{}.torrent'.format(name)
         with open(filename, 'wb') as file:
             for chunk in torrent:
                 file.write(chunk)
+
+        return filename
 
     def _ask_tracker(self, mode, search='', search_id='', page_no=1, topic_id=''):
         # Choose request type

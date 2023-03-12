@@ -200,17 +200,19 @@ class Rutracker:
         - Name (name will be used as a filename. Torrent id will be used otherwise)
         - Path (working directory will be used by default)
 
-        OUT: name.torrent file saved to path
+        OUT: name.torrent file path
         """
 
         torrent = self._ask_tracker('downloadtorrent', topic_id=str(topic_id))
         if not name:
             name = str(topic_id)
-        name = path + name
+        name = os.path.join(path, name)
         filename = '{}.torrent'.format(name)
         with open(filename, 'wb') as file:
             for chunk in torrent:
                 file.write(chunk)
+
+        return filename
 
     def _ask_tracker(self, mode, search='', search_id='', page_no=1, topic_id=''):
         # Choose request type

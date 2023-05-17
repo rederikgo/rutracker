@@ -161,7 +161,7 @@ class Rutracker:
             topics = [i.text.strip('\n') for i in soup.findAll('td', {'class': 'row4 med tLeft t-title-col tt'})]
             links = [int(i.get('data-topic_id')) for i in soup.findAll('a', {'class': 'med tLink tt-text ts-text hl-tags bold'})]
             sizes = [self._convert_size(i.text) for i in soup.findAll('td', {'class': 'row4 small nowrap tor-size'})]
-            seeds = [int(i.text) for i in soup.findAll('td', {'class': 'row4 nowrap'})]
+            seeds = [int(i.text) if i.text.isdigit() else re.findall(r'\d+', i.text)[0] * -1 for i in soup.findAll('td', {'class': 'row4 nowrap'})]
             leeches = [int(i.text) for i in soup.findAll('td', {'class': 'row4 leechmed bold'})]
             downloads = [int(i.text) for i in soup.findAll('td', {'class': 'row4 small number-format'})]
             added = [int(i.get('data-ts_text')) for i in soup.findAll('td', {'class': 'row4 small nowrap'})]
